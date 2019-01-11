@@ -23,8 +23,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
@@ -272,7 +272,7 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
 
         @Override
         public void download(IDownloadAgent agent, String url, File temp) {
-            new UpdateDownloader(agent, mContext, url, temp).execute();
+            new UpdateNoRenewalDownloader(agent, mContext, url, temp).execute();
         }
     }
 
@@ -298,7 +298,8 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
             }
             final UpdateInfo info = agent.getInfo();
             String size = Formatter.formatShortFileSize(mContext, info.size);
-            String content = String.format("最新版本：%1$s\n新版本大小：%2$s\n\n更新内容\n%3$s", info.versionName, size, info.updateContent);
+//            String content = String.format("最新版本：%1$s\n新版本大小：%2$s\n\n更新内容\n%3$s", info.versionName, size, info.updateContent);
+            String content = String.format("最新版本：%1$s\n\n更新内容\n%3$s", info.versionName, size, info.updateContent);
 
             final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
 
