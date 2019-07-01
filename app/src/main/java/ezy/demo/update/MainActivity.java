@@ -33,9 +33,11 @@ import ezy.boost.update.UpdateUtil;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    String mCheckUrl = "http://client.waimai.baidu.com/message/updatetag";
+    String mCheckUrl = "http://222.223.212.195:8006/app/v1/apps/0de0b5cf15d8484a9f4a7b6caa7c05fd/versions/last?version=1.3.7";
+//    String mCheckUrl = "http://client.waimai.baidu.com/message/updatetag";
 
-    String mUpdateUrl = "http://mobile.ac.qq.com/qqcomic_android.apk";
+    String mUpdateUrl = "http://222.223.212.195:8006/app/resource/attachs/38e3e70094304dda887b0b95d5d3e4e9/file";
+//    String mUpdateUrl = "http://mobile.ac.qq.com/qqcomic_android.apk";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

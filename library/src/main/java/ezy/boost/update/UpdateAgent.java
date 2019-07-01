@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
 
@@ -140,11 +141,11 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
     }
 
     @Override
-    public void onStart() {
+    public void onStart(long maxSize) {
         if (mInfo.isSilent) {
-            mOnNotificationDownloadListener.onStart();
+            mOnNotificationDownloadListener.onStart(maxSize);
         } else {
-            mOnDownloadListener.onStart();
+            mOnDownloadListener.onStart(maxSize);
         }
     }
 
@@ -359,17 +360,34 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
         }
 
         @Override
-        public void onStart() {
+        public void onStart(long maxSize) {
             if (mContext instanceof Activity && !((Activity) mContext).isFinishing()) {
                 ProgressDialog dialog = new ProgressDialog(mContext);
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 dialog.setMessage("下载中...");
+                dialog.setProgressNumberFormat("%1d MB/%2d MB");
+                dialog.setMax((int)bytes2kb(maxSize));
                 dialog.setIndeterminate(false);
                 dialog.setCancelable(false);
                 dialog.show();
                 mDialog = dialog;
             }
         }
+
+        /**
+         * byte(字节)根据长度转成kb(千字节)和mb(兆字节)
+         *
+         * @param bytes
+         * @return
+         */
+        public static int bytes2kb(long bytes) {
+            BigDecimal filesize = new BigDecimal(bytes);
+            BigDecimal megabyte = new BigDecimal(1024 * 1024);
+            int returnValue = filesize.divide(megabyte, 2, BigDecimal.ROUND_UP)
+                    .intValue();
+            return (returnValue);
+        }
+
 
         @Override
         public void onProgress(int i) {
@@ -398,7 +416,7 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
         }
 
         @Override
-        public void onStart() {
+        public void onStart(long maxSize) {
             if (mBuilder == null) {
                 String title = "下载中 - " + mContext.getString(mContext.getApplicationInfo().labelRes);
                 mBuilder = new NotificationCompat.Builder(mContext);

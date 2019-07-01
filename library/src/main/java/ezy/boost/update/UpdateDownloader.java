@@ -104,7 +104,7 @@ class UpdateDownloader extends AsyncTask<Void, Integer, Long> {
     protected void onProgressUpdate(Integer... progress) {
         switch (progress[0]) {
         case EVENT_START:
-            mAgent.onStart();
+            mAgent.onStart(mBytesTotal);
             break;
         case EVENT_PROGRESS:
             long now = System.currentTimeMillis();

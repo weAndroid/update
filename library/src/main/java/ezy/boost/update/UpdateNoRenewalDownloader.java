@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -107,7 +108,7 @@ class UpdateNoRenewalDownloader extends AsyncTask<Void, Integer, Long> {
     protected void onProgressUpdate(Integer... progress) {
         switch (progress[0]) {
         case EVENT_START:
-            mAgent.onStart();
+            mAgent.onStart(mBytesTotal);
             break;
         case EVENT_PROGRESS:
             long now = System.currentTimeMillis();
@@ -117,7 +118,8 @@ class UpdateNoRenewalDownloader extends AsyncTask<Void, Integer, Long> {
             mTimeLast = now;
             mTimeUsed = now - mTimeBegin;
             mSpeed = mBytesLoaded * 1000 / mTimeUsed;
-            mAgent.onProgress((int) (this.getBytesLoaded() * 100 / mBytesTotal));
+//            mAgent.onProgress((int) (this.getBytesLoaded() * 100 / mBytesTotal));
+            mAgent.onProgress((int) bytes2kb(this.getBytesLoaded()));
             break;
         }
     }
@@ -259,5 +261,20 @@ class UpdateNoRenewalDownloader extends AsyncTask<Void, Integer, Long> {
         } catch (RuntimeException ex) {
             return 0;
         }
+    }
+
+
+    /**
+     * byte(字节)根据长度转成kb(千字节)和mb(兆字节)
+     *
+     * @param bytes
+     * @return
+     */
+    public static int bytes2kb(long bytes) {
+        BigDecimal filesize = new BigDecimal(bytes);
+        BigDecimal megabyte = new BigDecimal(1024 * 1024);
+        int returnValue = filesize.divide(megabyte, 2, BigDecimal.ROUND_UP)
+                .intValue();
+        return (returnValue);
     }
 }

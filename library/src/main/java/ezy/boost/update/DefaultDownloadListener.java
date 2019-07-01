@@ -18,7 +18,7 @@ package ezy.boost.update;
 
 public class DefaultDownloadListener implements OnDownloadListener {
     @Override
-    public void onStart() {
+    public void onStart(long maxSize) {
 
     }
 
