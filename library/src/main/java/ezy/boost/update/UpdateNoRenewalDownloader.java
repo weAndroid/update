@@ -163,7 +163,17 @@ class UpdateNoRenewalDownloader extends AsyncTask<Void, Integer, Long> {
         mConnection = create(new URL(mUrl));
         mConnection.connect();
 
-        checkStatus();
+        int statusCode = mConnection.getResponseCode();
+        if (statusCode == HttpURLConnection.HTTP_MOVED_TEMP
+                || statusCode == HttpURLConnection.HTTP_MOVED_PERM)// 302, 301
+        {
+            mUrl = mConnection.getHeaderField("location");
+            return download();
+        }
+        if (statusCode != 200 && statusCode != 206) {
+            throw new UpdateError(UpdateError.DOWNLOAD_HTTP_STATUS, "" + statusCode);
+        }
+//        checkStatus();
 
         mBytesTotal = mConnection.getContentLength();
 
@@ -181,7 +191,16 @@ class UpdateNoRenewalDownloader extends AsyncTask<Void, Integer, Long> {
             mConnection.addRequestProperty("Range", "bytes=" + mBytesTemp + "-");
             mConnection.connect();
 
-            checkStatus();
+            int statusCode1 = mConnection.getResponseCode();
+            if (statusCode1 == HttpURLConnection.HTTP_MOVED_TEMP
+                    || statusCode1 == HttpURLConnection.HTTP_MOVED_PERM)// 302, 301
+            {
+                mUrl = mConnection.getHeaderField("location");
+                return download();
+            }
+            if (statusCode1 != 200 && statusCode1 != 206) {
+                throw new UpdateError(UpdateError.DOWNLOAD_HTTP_STATUS, "" + statusCode1);
+            }
         }
 
         publishProgress(EVENT_START);
