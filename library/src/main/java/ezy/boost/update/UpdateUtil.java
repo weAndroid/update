@@ -26,6 +26,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,12 +57,12 @@ public class UpdateUtil {
     public static void clean(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREFS, 0);
         File file = new File(context.getExternalCacheDir(), sp.getString(KEY_UPDATE, "") + ".apk");
-        File fileNoAPK = new File(context.getExternalCacheDir(), sp.getString(KEY_UPDATE, "") );
+        File fileNoAPK = new File(context.getExternalCacheDir(), sp.getString(KEY_UPDATE, ""));
         UpdateUtil.log("apk ==> " + file.toString());
         if (file.exists()) {
             file.delete();
         }
-        if(fileNoAPK.exists()){
+        if (fileNoAPK.exists()) {
             fileNoAPK.delete();
         }
         sp.edit().clear().apply();
@@ -130,7 +131,16 @@ public class UpdateUtil {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
         if (force) {
-            System.exit(0);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    /**
+                     *要执行的操作
+                     */
+                    System.exit(0);
+                }
+            }, 1000);
         }
     }
 
